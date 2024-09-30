@@ -21,6 +21,9 @@ import { useAsyncMutation } from "../../hooks/Hooks";
 const Search = () => {
   const { isSearch } = useSelector((state) => state.misc);
 
+  // Assuming the logged-in user data is stored in state.auth.user
+  const { user: currentUser } = useSelector((state) => state.auth);
+
   const [searchUser] = useLazySearchUserQuery();
 
   const [sendFriendRequest, isLoadingFriendRequest] = useAsyncMutation(
@@ -72,7 +75,7 @@ const Search = () => {
           }}
         />
 
-        <List>
+        {/* <List>
           {users.map((usr) => (
             <UserItem
               user={usr}
@@ -81,6 +84,19 @@ const Search = () => {
               handlerIsLoading={isLoadingFriendRequest}
             />
           ))}
+        </List> */}
+
+        <List>
+          {users
+            .filter((usr) => usr._id !== currentUser._id) // Exclude the logged-in user
+            .map((usr) => (
+              <UserItem
+                user={usr}
+                key={usr._id}
+                handler={addFriendHandler}
+                handlerIsLoading={isLoadingFriendRequest}
+              />
+            ))}
         </List>
       </Stack>
     </Dialog>
